@@ -1,73 +1,320 @@
-# Welcome to your Lovable project
+# CBIR System - Content-Based Image Retrieval
 
-## Project info
+A modern, AI-powered Content-Based Image Retrieval system using Convolutional Autoencoders and FAISS vector search.
 
-**URL**: https://lovable.dev/projects/b920fbf8-3c1c-42ea-8d28-1848647b9757
+## 🎯 Features
 
-## How can I edit this code?
+- **Deep Learning**: Convolutional Autoencoder for feature extraction
+- **Fast Search**: FAISS vector database for efficient similarity search
+- **Modern UI**: Beautiful React interface with drag-and-drop upload
+- **Real-time Results**: Instant visual similarity matching
+- **Scalable**: Handles large image datasets efficiently
 
-There are several ways of editing your application.
+## 🏗️ Architecture
 
-**Use Lovable**
+### Frontend (React + TypeScript)
+- Modern, minimalist UI with drag-and-drop image upload
+- Responsive grid layout for search results
+- Real-time loading states and animations
+- Built with Vite, React, TailwindCSS, and shadcn/ui
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b920fbf8-3c1c-42ea-8d28-1848647b9757) and start prompting.
+### Backend (Python + FastAPI)
+- FastAPI server for API endpoints
+- TensorFlow/Keras Convolutional Autoencoder
+- FAISS vector database for similarity search
+- Static file serving for result images
 
-Changes made via Lovable will be committed automatically to this repo.
+### AI Model
+- **Architecture**: Convolutional Autoencoder (CAE)
+- **Feature Dimension**: 512D vectors
+- **Similarity Metric**: Cosine similarity
+- **Indexing**: FAISS (Facebook AI Similarity Search)
 
-**Use your preferred IDE**
+## 📁 Project Structure
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+```
+cbir-system/
+├── frontend/                 # React frontend (this directory)
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── ImageUpload.tsx
+│   │   │   ├── ResultsGrid.tsx
+│   │   │   └── ui/
+│   │   ├── pages/
+│   │   │   └── Index.tsx
+│   │   └── index.css
+│   └── package.json
+│
+└── backend/                  # Python backend (see PYTHON_BACKEND.md)
+    ├── model/
+    │   ├── autoencoder.py   # CAE model definition
+    │   └── train.py         # Training script
+    ├── index.py             # FAISS indexing script
+    ├── api.py               # FastAPI server
+    ├── config.py            # Configuration
+    ├── requirements.txt     # Python dependencies
+    └── dataset/
+        └── images/          # Your image dataset
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🚀 Getting Started
 
-Follow these steps:
+### Prerequisites
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- Node.js 18+ (for frontend)
+- Python 3.9+ (for backend)
+- pip and npm/yarn
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Frontend Setup
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. **Install dependencies**:
+```bash
+npm install
+```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+2. **Start development server**:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The frontend will be available at `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Backend Setup
 
-**Use GitHub Codespaces**
+**Complete Python backend code is provided in `PYTHON_BACKEND.md`**
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. **Create backend directory**:
+```bash
+mkdir backend
+cd backend
+```
 
-## What technologies are used for this project?
+2. **Copy the code from PYTHON_BACKEND.md** and create:
+   - `requirements.txt`
+   - `config.py`
+   - `model/autoencoder.py`
+   - `model/train.py`
+   - `index.py`
+   - `api.py`
 
-This project is built with:
+3. **Install Python dependencies**:
+```bash
+pip install -r requirements.txt
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+4. **Prepare your dataset**:
+```bash
+mkdir -p dataset/images
+# Copy your images to dataset/images/
+```
 
-## How can I deploy this project?
+5. **Train the model** (optional - can use pre-trained):
+```bash
+python model/train.py
+```
 
-Simply open [Lovable](https://lovable.dev/projects/b920fbf8-3c1c-42ea-8d28-1848647b9757) and click on Share -> Publish.
+6. **Build FAISS index**:
+```bash
+python index.py
+```
 
-## Can I connect a custom domain to my Lovable project?
+This will:
+- Load all images from `dataset/images/`
+- Extract features using the encoder
+- Build a FAISS index for fast similarity search
+- Save `image_features.index` and `filename_mapping.json`
 
-Yes, you can!
+7. **Start the API server**:
+```bash
+python api.py
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+The backend API will be available at `http://localhost:8000`
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### Connecting Frontend to Backend
+
+1. Open `src/pages/Index.tsx`
+2. Uncomment the API call section:
+
+```typescript
+const formData = new FormData();
+formData.append('image', file);
+const response = await fetch('http://localhost:8000/search', {
+  method: 'POST',
+  body: formData,
+});
+const data = await response.json();
+setResults(data.results);
+```
+
+3. Comment out the mock data section
+
+## 🎨 Design System
+
+The UI uses a modern, tech-forward design:
+
+- **Colors**: Deep blue/cyan gradient theme
+- **Typography**: Clean, modern fonts
+- **Animations**: Smooth transitions and loading states
+- **Layout**: Card-based, responsive grid
+- **Components**: shadcn/ui components with custom variants
+
+## 🔧 Configuration
+
+### Backend Configuration (`backend/config.py`)
+
+```python
+IMAGE_SIZE = (224, 224)    # Input image size
+FEATURE_DIM = 512          # Feature vector dimension
+TOP_K = 10                 # Number of results to return
+API_PORT = 8000           # Backend port
+```
+
+### Frontend Configuration
+
+Update the API URL in `src/pages/Index.tsx` to match your backend:
+
+```typescript
+const BACKEND_URL = 'http://localhost:8000';
+```
+
+## 📊 How It Works
+
+1. **Image Upload**: User uploads a query image via drag-and-drop or file browser
+2. **Preprocessing**: Image is resized and normalized
+3. **Feature Extraction**: Encoder extracts a 512D feature vector
+4. **Similarity Search**: FAISS finds the top-K most similar vectors
+5. **Results Display**: Similar images are displayed in a responsive grid
+
+### FAISS Indexing Process
+
+```
+Dataset Images → Encoder → Feature Vectors → FAISS Index
+     ↓              ↓            ↓               ↓
+  1000 images   512D vectors  Normalized   Fast Search
+```
+
+### Search Process
+
+```
+Query Image → Encoder → Feature Vector → FAISS Search → Top-K Results
+     ↓           ↓            ↓              ↓              ↓
+  Uploaded   512D vector  Normalized   Cosine Sim.   Ranked Images
+```
+
+## 🧪 Testing
+
+### Test the Backend
+
+```bash
+# Health check
+curl http://localhost:8000/
+
+# Get stats
+curl http://localhost:8000/stats
+
+# Search (using curl)
+curl -X POST -F "file=@test_image.jpg" http://localhost:8000/search
+```
+
+### Test the Frontend
+
+1. Start the dev server: `npm run dev`
+2. Upload a test image
+3. Verify results are displayed correctly
+
+## 🚀 Deployment
+
+### Frontend
+
+Deploy to Lovable (automatic):
+```bash
+# Just push to your repository
+# Lovable automatically builds and deploys
+```
+
+Or deploy to other platforms:
+- Vercel: `vercel deploy`
+- Netlify: `netlify deploy`
+- Custom server: `npm run build` and serve the `dist/` folder
+
+### Backend
+
+Deploy Python backend to:
+- **Railway**: `railway up`
+- **Render**: Connect your repo
+- **AWS EC2**: Traditional server deployment
+- **Docker**: Use the provided Dockerfile (create one)
+
+Update the frontend API URL to your deployed backend URL.
+
+## 🔐 Security Notes
+
+- Add CORS configuration for production
+- Use environment variables for sensitive data
+- Add rate limiting to prevent abuse
+- Implement authentication if needed
+- Validate uploaded files (size, type)
+
+## 📈 Performance Optimization
+
+- **GPU Acceleration**: Use CUDA for faster feature extraction
+- **Batch Processing**: Process multiple images simultaneously
+- **Caching**: Cache frequently searched images
+- **CDN**: Use CDN for static image serving
+- **Index Optimization**: Use FAISS IVF indices for larger datasets
+
+## 🤝 Contributing
+
+This is a template project. Feel free to:
+- Enhance the UI/UX
+- Add more search filters
+- Implement user authentication
+- Add image upload to dataset
+- Improve the AI model
+- Add advanced FAISS indices
+
+## 📝 License
+
+MIT License - feel free to use for any purpose
+
+## 🆘 Troubleshooting
+
+### "Models not loaded" error
+- Run `python index.py` first to build the FAISS index
+- Ensure `encoder.h5` exists in `backend/models/`
+
+### CORS errors
+- Check that CORS is enabled in `api.py`
+- Verify the frontend is calling the correct backend URL
+
+### Slow search
+- Ensure FAISS index is properly built
+- Consider using GPU acceleration
+- Use IVF indices for very large datasets
+
+### Out of memory
+- Reduce batch size in training
+- Use smaller feature dimensions
+- Process images in smaller batches during indexing
+
+## 📚 Resources
+
+- [FAISS Documentation](https://github.com/facebookresearch/faiss)
+- [TensorFlow/Keras Docs](https://www.tensorflow.org/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [React Documentation](https://react.dev/)
+
+## ✨ Future Enhancements
+
+- [ ] Multi-modal search (text + image)
+- [ ] User authentication and saved searches
+- [ ] Image upload to dataset via UI
+- [ ] Advanced filtering options
+- [ ] Batch image search
+- [ ] Model fine-tuning interface
+- [ ] Performance analytics dashboard
+
+---
+
+Built with ❤️ using React, TensorFlow, and FAISS
